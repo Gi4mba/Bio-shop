@@ -3,6 +3,7 @@ import type { Product } from "../types/Product";
 import { getIPFSUrl } from "../data/products";
 import { useCartStore } from "../store/cartStore";
 import { useConnection } from "wagmi";
+import { useToast } from "../hooks/useToastContext";
 
 interface Props {
   product: Product;
@@ -13,8 +14,14 @@ export const ProductCard: React.FC<Props> = memo(({ product }) => {
   const [isAdding, setIsAdding] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
   const { isConnected } = useConnection();
+  const { showWalletWarning } = useToast();
 
   const handleAddToCart = async () => {
+    if (!isConnected) {
+      showWalletWarning();
+      return;
+    }
+
     // Simula un delay di 600ms per mostrare l'animazione
     setIsAdding(true);
     addItem(product, quantity);
@@ -30,12 +37,6 @@ export const ProductCard: React.FC<Props> = memo(({ product }) => {
           alt={product.name}
           className="w-full h-100 object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        <div className="absolute top-3 left-3">
-          <span className="glass text-white text-xs px-3 py-1 rounded-full font-medium backdrop-blur-sm">
-            {product.category}
-          </span>
-        </div>
-        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>
 
       <div className="p-6 space-y-4">
@@ -43,6 +44,10 @@ export const ProductCard: React.FC<Props> = memo(({ product }) => {
           <h3 className="text-lg font-bold text-gray-800 group-hover:text-primary transition-colors">
             {product.name}
           </h3>
+          <span className="glass text-black text-xs px-3 py-1 rounded-full font-medium backdrop-blur-sm">
+            {product.category}
+          </span>
+          <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 pointer-events-none"></div>
           <p className="text-sm text-gray-600 mt-1 line-clamp-2">{product.description}</p>
         </div>
 
@@ -70,13 +75,13 @@ export const ProductCard: React.FC<Props> = memo(({ product }) => {
 
           <button
             onClick={handleAddToCart}
-            disabled={isAdding || !isConnected}
+            disabled={isAdding}
             className={`flex-1 py-3 rounded-xl font-semibold transition-all duration-300 ${
               isAdding
                 ? "bg-green-500 text-white scale-95"
                 : isConnected
-                  ? "bio-gradient text-white hover:shadow-lg hover:scale-105"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  ? "bio-gradient text-white hover:shadow-lg hover:scale-105 cursor-pointer"
+                  : "bg-gray-300 text-gray-500 cursor-pointer hover:bg-gray-400"
             }`}
           >
             {isAdding ? (
@@ -84,10 +89,8 @@ export const ProductCard: React.FC<Props> = memo(({ product }) => {
                 <span className="animate-pulse">✓</span>
                 Aggiunto!
               </span>
-            ) : isConnected ? (
-              "Aggiungi al carrello"
             ) : (
-              "Connetti wallet"
+              "Aggiungi al carrello"
             )}
           </button>
         </div>
