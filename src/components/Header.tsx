@@ -14,7 +14,7 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-3 group">
           <div>
             <h1 className="text-xl font-bold text-white">Gianni Bio Shop</h1>
-            <p className="text-xs text-white/70">Prodotti biologici a km zero</p>
+            <p className="text-m text-white/70">Prodotti biologici a km zero</p>
           </div>
         </div>
 

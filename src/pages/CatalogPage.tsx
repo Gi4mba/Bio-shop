@@ -19,7 +19,7 @@ export const CatalogPage: React.FC = () => {
           </p>
           <div className="flex justify-center gap-4 mt-6">
             <div className="glass rounded-full px-4 py-2 text-sm font-medium text-gray-700">
-              🚚 Spedizione gratuita sopra 50€
+              🚚 Spedizione gratuita sopra 50$
             </div>
             <div className="glass rounded-full px-4 py-2 text-sm font-medium text-gray-700">
               🔒 Pagamenti su blockchain
